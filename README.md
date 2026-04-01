@@ -1,5 +1,7 @@
 # File Processor API
 
+![version](https://img.shields.io/badge/version-v0.1.0-blue)
+
 Projeto desenvolvido com fins de estudo. O objetivo é explorar na prática tecnologias como FastAPI, Pandas, OpenPyXL, além de boas práticas de versionamento com Git (utilizando branches e Git Flow) e futuramente integração com banco de dados, construindo uma API funcional de processamento de arquivos CSV e Excel com validações e geração de métricas básicas.
 
 ---
