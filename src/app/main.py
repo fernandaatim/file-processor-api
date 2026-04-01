@@ -5,3 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 app = FastAPI(title="File Processor API")
 app.include_router(upload_router)
+
+@app.get("/")
+async def root():
+    return {"message": "Bem-vindo à File Processor API!"}
