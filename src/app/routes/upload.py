@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.services.processor import process_file
-from dontenv import dotenv_values
+from dotenv import dotenv_values
 
 config = dotenv_values(".env")
 MAX_FILE_SIZE = int(config.get("MAX_FILE_SIZE", 5000000))
