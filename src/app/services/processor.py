@@ -4,15 +4,10 @@ from fastapi import UploadFile, HTTPException
 
 REQUIRED_COLUMNS = ["id", "cliente", "valor"]
 
-async def process_file(file: UploadFile):
-    try:
-        contents = await file.read()
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Erro ao ler o arquivo: {str(e)}")
-
+async def process_file(file: UploadFile, contents: bytes):
     try:
         if file.filename.endswith(".csv"):
-            df = pd.read_csv(io.BytesIO(contents))
+            df = pd.read_csv(io.BytesIO(contents), sep=";", encoding="utf-8-sig")
         elif file.filename.endswith((".xls", ".xlsx")):
             df = pd.read_excel(io.BytesIO(contents))
         else:
@@ -31,7 +26,9 @@ async def process_file(file: UploadFile):
         total = df["valor"].sum()
         negative_values = df[df["valor"] < 0].to_dict(orient="records")
         duplicate_values = df[df.duplicated()].to_dict(orient="records")
-        df.to_excel(f"data/{file.filename}", index=False)
+
+        output_filename = file.filename.rsplit(".", 1)[0] + "_processed.xlsx"
+        df.to_excel(f"data/{output_filename}", index=False)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Erro ao processar os dados: {str(e)}")
     

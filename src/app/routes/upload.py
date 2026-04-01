@@ -12,5 +12,6 @@ async def upload_file(file: UploadFile = File(...)):
     contents = await file.read()
     if len(contents) > MAX_FILE_SIZE:
         raise HTTPException(status_code=400, detail="Arquivo excede o tamanho máximo permitido.")
-    result = await process_file(file)
+    
+    result = await process_file(file, contents)
     return result
