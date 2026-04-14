@@ -119,7 +119,7 @@ Realiza o upload de um arquivo CSV ou Excel para processamento.
 ## Próximos passos
 
 - [ ] Testes automatizados com `pytest`
-- [ ] Suporte a mais formatos de arquivo (ex: `.json`, `.parquet`)
+- [x] Suporte a mais formatos de arquivo (ex: `.json`, `.parquet`)
 - [x] Detecção automática de separador e encoding no CSV
 - [ ] Autenticação via API Key
 - [ ] Histórico de arquivos processados com banco de dados
