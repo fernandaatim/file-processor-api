@@ -1,5 +1,6 @@
 import pandas as pd
 import io
+import json
 import chardet
 import csv
 from fastapi import UploadFile, HTTPException
@@ -18,15 +19,23 @@ def detect_csv_params(contents: bytes) -> dict:
         sep = ","
     return {"encoding": encoding, "sep": sep}
 
+FILE_READERS = {
+    "csv": lambda contents: pd.read_csv(io.BytesIO(contents), **detect_csv_params(contents)),
+    ("xls", "xlsx"): lambda contents: pd.read_excel(io.BytesIO(contents)),
+    "json": lambda contents: pd.read_json(io.BytesIO(contents)),
+    "parquet": lambda contents: pd.read_parquet(io.BytesIO(contents))
+}
+
 async def process_file(file: UploadFile, contents: bytes):
     try:
-        if file.filename.endswith(".csv"):
-            params = detect_csv_params(contents)
-            df = pd.read_csv(io.BytesIO(contents), **params)
-        elif file.filename.endswith((".xls", ".xlsx")):
-            df = pd.read_excel(io.BytesIO(contents))
-        else:
+        extension = file.filename.rsplit(".", 1)[-1].lower()
+        reader = FILE_READERS.get(extension)
+
+        if not reader:
             raise HTTPException(status_code=400, detail="Formato de arquivo não suportado.")
+        
+        df = reader(contents)
+
     except HTTPException:
         raise
     except Exception as e:
